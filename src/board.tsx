@@ -51,15 +51,12 @@ type AnswerProps = {
 	isSelected: boolean
 }
 const Answer: React.FC<AnswerProps> = ({answer, isSelected}) => {
-	if (isSelected) {
 		return (
-			<div className="row">
-				<p className="column">{answer.answer}</p>
-				<p className="column">{answer.points} points</p>
+			<div className={"row"}>
+					<p className="column">{isSelected && answer.answer}</p>
+					<p className="column">{isSelected && answer.points}</p>
 			</div>
 		)
-	}
-	return null
 }
 export const Board = () => {
 	const [selectedAnswer, setSelectedAnswer] = useState<Answer>()
@@ -99,7 +96,7 @@ export const Board = () => {
 		<div>
 			<h1>{currentQuestion.question}</h1>
 
-			{currentQuestion.answersPoints.map((answer, idx) => (
+			{currentQuestion.answersPoints.slice(0,4).map((answer, idx) => (
 				<Answer
 					key={answer.answer + idx}
 					answer={answer}
