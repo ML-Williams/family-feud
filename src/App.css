@@ -1,22 +1,56 @@
 #Board {
     margin-top: 10px;
 }
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
-
-}
 
 .row {
-    width: 50vw;
+    position: relative;
+    padding: 10px;
+    border: 1px solid black;
+    width: 35vw;
     display: flex;
+    height: 30px;
+
 }
 
 .column {
     flex: 1;
-    border: 1px solid black;
-    padding: 10px;
-    margin: 0;
+}
+
+
+.front {
+    margin-left: 16vw;
+}
+
+.hidden {
+    display: none;
+}
+.visible {
+    margin-top: 50px;
+    margin-right: 35vw;
+    position: absolute;
+    align-items: center;
+    display: flex;
+    flex: 1;
+
+}
+
+.score {
+    font-size: 2rem;
+    font-family: headerFont, serif;
+    color: black;
+    margin-left: 50vw;
+
+}
+.container {
+    position: relative;
+}
+@media (max-width: 800px) {
+    .container {
+    }
+    .visible {
+        position: absolute;
+        margin-right: 500vw;
+        display: flex;
+        flex: 1;
+    }
 }

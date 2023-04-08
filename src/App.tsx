@@ -5,6 +5,7 @@ import './App.css';
 import {Board} from './board';
 import {createClient} from "@supabase/supabase-js";
 
+
 const supabaseUrl = 'https://ulsmpuysqyuftowapzsw.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsc21wdXlzcXl1ZnRvd2FwenN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzg4MjM0NzYsImV4cCI6MTk5NDM5OTQ3Nn0.8A_onquRzOO8TOI7lHdGwBOQt-mOVCQ8JVRpP4J-9Tk'
 const supabase = createClient(supabaseUrl, supabaseKey, {
