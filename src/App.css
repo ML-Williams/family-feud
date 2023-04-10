@@ -6,7 +6,7 @@
     position: relative;
     padding: 10px;
     border: 1px solid black;
-    width: 35vw;
+    width: 30vw;
     display: flex;
     height: 30px;
 
@@ -18,7 +18,7 @@
 
 
 .front {
-    margin-left: 16vw;
+    margin-left: 15vw;
 }
 
 .hidden {
@@ -53,4 +53,12 @@
         display: flex;
         flex: 1;
     }
+}
+.fastrow {
+    position: relative;
+    padding: 15px;
+    border: 1px solid black;
+    width: 25vw;
+    display: flex;
+    height: 30px;
 }

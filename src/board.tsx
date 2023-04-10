@@ -123,6 +123,11 @@ type AnswerProps = {
     answerIdx : number
 }
 
+type FastMoneyAnswerProps = {
+    answer: Answer
+}
+
+
 
 const Answer: React.FC<AnswerProps> = ({answer, isSelected, answerIdx}) => {
     return (
@@ -148,6 +153,9 @@ const Answer: React.FC<AnswerProps> = ({answer, isSelected, answerIdx}) => {
 }
 function getFastMoneyRandomQuestion(): FastMoneyQuestions {
     const randomIndex = Math.floor(Math.random() * fastMoneyQuestions.length)
+    const randomQuestion = fastMoneyQuestions[randomIndex]
+    const rQuestionHolder = []
+    rQuestionHolder.push(randomQuestion)
     return fastMoneyQuestions[randomIndex]
 }
 
@@ -176,7 +184,7 @@ return (
  * fast money round to-do list
  * 1. create questions and answers/points for fast money round
  * 2. create a timer for 50 seconds for round 5 and 60 seconds for round 6
- * 3. proceed to next question after input submission or timer runs out
+ * 3. proceed to next question after input submission
  *      - once all questions are answered reveal points and go to next round
  * 4. create a div that shows the past questions and the correlating top answer one at a time
  * 5. if combined score is greater than 300 then win 20,000 otherwise 5 * score
@@ -184,13 +192,23 @@ return (
  * 7. shows the input value after submission in each div for past questions
  * **/
 
+/**
+ * fast money break-down
+ * 1. have users input display in a div in accordance to the questions order
+ * 2. reveal score of each answer after last question submission
+ * 3. hide answers of last round
+ * 4. render another empty column of divs to repeat round
+ * 5. reveal previous answers of last round and scores of each answer of current round
+ * 6. reveal top answers of presented questions
+ * **/
 
-const FastMoney = () => {
+
+const FastMoney: React.FC<FastMoneyAnswerProps> = () => {
 
  return (
      <div>
          <div>
-             <div>' ' ? inputValue </div>
+             <div className="fastrow"></div>
          </div>
      </div>)
 }
@@ -284,6 +302,10 @@ export const Board = () => {
 
     }, [inputValue, currentQuestion.answersPoints])
 
+    const handleFastSubmit = useCallback((e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault()
+    },[])
+
     function getRandomQuestion(): Questions {
         const randomIndex = Math.floor(Math.random() * questions.length)
         return questions[randomIndex]
@@ -302,6 +324,10 @@ export const Board = () => {
     const [currentFastMoneyQuestion, setCurrentFastMoneyQuestion] = useState<FastMoneyQuestions>(getFastMoneyRandomQuestion())
     const fastQuestions = currentFastMoneyQuestion.question
     const fastAnswers = currentFastMoneyQuestion.answersPoints
+
+    useEffect(() => {
+        setCurrentFastMoneyQuestion(getFastMoneyRandomQuestion)
+    }, [])
 
     return (
         <div>
@@ -349,7 +375,7 @@ export const Board = () => {
             <div
 				style={
                 {
-                    marginLeft: "13%",
+                    marginLeft: "18%",
                     position:"absolute",
 					display:"flex",
                     border: "5px solid black",
@@ -417,8 +443,31 @@ export const Board = () => {
             </form>
             </div> :
                 <div>
-                <div>{fastQuestions}</div>
-                <FastMoney />
+                <div
+                    style={
+                        {
+                            textAlign: "center",
+                            fontSize: "2rem",
+                            color: "blue",
+                        }
+                    }>
+                    {fastQuestions}
+                </div>
+                    { fastAnswers.slice(0,5).map((answer, idx) => {
+                        return (
+                        <FastMoney answer={answer} key={idx} />)
+                        })
+                    }
+                    <form
+                        onSubmit={handleFastSubmit}
+                    >
+                        <input type="text" value={inputValue} onChange={handleInputChange}/>
+                        <button type="submit" onSubmit={() => {
+                            setInputValue("")
+                        }
+                        }>Submit</button>
+                        <button>No Answer</button>
+                    </form>
                 </div>
                 }
 
