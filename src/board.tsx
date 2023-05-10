@@ -1,5 +1,6 @@
 import strikeImg from './strikeImg.png';
 import React, {useState, useEffect, useCallback} from "react";
+import _ from 'underscore';
 // find a way to make the answers reveal after the round is over ✅
 // go to next round if round is > 4 and answers are revealed // create a button to go to next round ✅
 // score > 300 ? <div> fast money round </div> : null
@@ -124,6 +125,7 @@ type AnswerProps = {
 }
 
 type FastMoneyAnswerProps = {
+    userAnswer: string
     answer: Answer
 }
 
@@ -203,12 +205,12 @@ return (
  * **/
 
 
-const FastMoney: React.FC<FastMoneyAnswerProps> = () => {
+const FastMoney: React.FC<FastMoneyAnswerProps> = ({userAnswer}) => {
 
- return (
+    return (
      <div>
          <div>
-             <div className="fastrow"></div>
+             <div className="fastrow">{userAnswer}</div>
          </div>
      </div>)
 }
@@ -219,7 +221,8 @@ export const Board = () => {
     const [strike, setStrike] = useState(0)
     const [showStrike, setShowStrike] = useState(false)
     const [score, setScore] = useState(0)
-    let fastMoney = currentRound === 4 && score > 299
+    // let fastMoney = currentRound === 4 && score > 299
+    let fastMoney = true
 
 
     const [currentQuestion, setCurrentQuestion] = useState<Questions>(getRandomQuestion())
@@ -268,15 +271,12 @@ export const Board = () => {
         }
         if (inputValue === "no answer") {
             setStrike(strike + 1)
-            setShowStrike(true)
             showStrikeImg()
 
         } if (strike === 1) {
-            setShowStrike(true)
             showStrikeImg()
 
         } if (strike === 2) {
-            setShowStrike(true)
             showStrikeImg()
         }
 
@@ -291,7 +291,6 @@ export const Board = () => {
             togglePlayer()
             setCurrentQuestion(getRandomQuestion)
             setStrike(0)
-            console.log("I am working")
         }
         if (!allAnswered && strike === 2) {
             currentQuestion.answersPoints.forEach((answer) => {
@@ -302,8 +301,9 @@ export const Board = () => {
 
     }, [inputValue, currentQuestion.answersPoints])
 
-    const handleFastSubmit = useCallback((e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault()
+    const handleFastSubmit = useCallback((): void => {
+           // set user input to a div
+            setInputValue("")
     },[])
 
     function getRandomQuestion(): Questions {
@@ -323,7 +323,22 @@ export const Board = () => {
     const allAnswered = selectedAnswers.length === currentQuestion.answersPoints.length
     const [currentFastMoneyQuestion, setCurrentFastMoneyQuestion] = useState<FastMoneyQuestions>(getFastMoneyRandomQuestion())
     const fastQuestions = currentFastMoneyQuestion.question
-    const fastAnswers = currentFastMoneyQuestion.answersPoints
+
+
+    const ranquestions1 = _.sample(fastMoneyQuestions)
+    const ranquestions2 = _.sample(fastMoneyQuestions)
+    const ranquestions3 = _.sample(fastMoneyQuestions)
+    const ranquestions4 = _.sample(fastMoneyQuestions)
+    const ranquestions5 = _.sample(fastMoneyQuestions)
+
+    const [fastUserAnswers, setFastUserAnswers] = useState<Answer[]>(Array.from(Array(5)))
+    const [fastUserAnswers2, setFastUserAnswers2] = useState<Answer[]>(Array.from(Array(5)))
+    const topAnswers = currentFastMoneyQuestion.answersPoints.slice(0, 1)
+
+
+    const [shownSet, setShownSet] = useState(0)
+
+
 
     useEffect(() => {
         setCurrentFastMoneyQuestion(getFastMoneyRandomQuestion)
@@ -451,23 +466,41 @@ export const Board = () => {
                             color: "blue",
                         }
                     }>
-                    {fastQuestions}
-                </div>
-                    { fastAnswers.slice(0,5).map((answer, idx) => {
+                    {[fastQuestions].map((question, idx) => {
                         return (
-                        <FastMoney answer={answer} key={idx} />)
+                            <div key={idx}>
+                                {question}
+                            </div> )
+                    } )}
+                </div>
+                <div className='fastMoney' id='fastMoney'>
+                    { shownSet === 0 && fastUserAnswers.map((answer, idx, userAnswer ) => {
+
+                        return (
+                        <FastMoney  answer={answer} key={idx} userAnswer={inputValue}/>)
                         })
                     }
-                    <form
-                        onSubmit={handleFastSubmit}
-                    >
-                        <input type="text" value={inputValue} onChange={handleInputChange}/>
-                        <button type="submit" onSubmit={() => {
-                            setInputValue("")
+                </div>
+
+                    <div>
+
+                        { shownSet === 1 && fastUserAnswers2.map((answer, idx, userAnswer ) => {
+                            return (
+                                <FastMoney answer={answer} key={idx} userAnswer={inputValue}/>)
+                        })
                         }
-                        }>Submit</button>
-                        <button>No Answer</button>
-                    </form>
+
+                        <input
+                            type="text" value={inputValue} onChange={handleInputChange}
+                            />
+                        <button
+                            onClick={() => {
+                            handleFastSubmit()
+                        }}>
+                            Submit
+                        </button>
+                        <button>Pass</button>
+                    </div>
                 </div>
                 }
 

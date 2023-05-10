@@ -1,10 +1,12 @@
 import React, {useState} from "react";
 import {channel} from "./App";
 
+
+
 export const Login = (props: { onFormSwitch: (arg0: string) => void }) => {
     const [username, setUsername] = useState('')
     return (
-        <div>
+        <div className="login">
             <input
                 value={username}
                 onChange={(e) => {
@@ -12,8 +14,22 @@ export const Login = (props: { onFormSwitch: (arg0: string) => void }) => {
                 }}
                 placeholder="Enter Username Here"
             />
-            <button>Log In</button>
-            <button
+            <input
+                type='button'
+                value='Login'
+                onClick={() => {
+                    if (username === '') {
+                        alert('Please enter a username')
+                    } else {
+                        props.onFormSwitch('play')
+                    }
+                }
+                }
+            />
+
+            <input
+                type='button'
+                value='Need an Username? Create one here'
                 onClick={() => {
                     props.onFormSwitch('signUp')
                     channel.send({
@@ -22,8 +38,7 @@ export const Login = (props: { onFormSwitch: (arg0: string) => void }) => {
                         payload: {move: 'over there'}
                     })
                 }}
-            > Need an Username? Create one here
-            </button>
+            />
         </div>
     )
 }
