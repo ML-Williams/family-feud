@@ -126,7 +126,6 @@ type AnswerProps = {
 
 type FastMoneyAnswerProps = {
     userAnswer: string
-    answer: Answer
 }
 
 
@@ -301,11 +300,6 @@ export const Board = () => {
 
     }, [inputValue, currentQuestion.answersPoints])
 
-    const handleFastSubmit = useCallback((): void => {
-           // set user input to a div
-            setInputValue("")
-    },[])
-
     function getRandomQuestion(): Questions {
         const randomIndex = Math.floor(Math.random() * questions.length)
         return questions[randomIndex]
@@ -321,29 +315,36 @@ export const Board = () => {
 
     const n = currentQuestion.answersPoints
     const allAnswered = selectedAnswers.length === currentQuestion.answersPoints.length
-    const [currentFastMoneyQuestion, setCurrentFastMoneyQuestion] = useState<FastMoneyQuestions>(getFastMoneyRandomQuestion())
+
+    const [fastMoneyQuestionIndex, setFastMoneyQuestionIndex] = useState(0)
+    const currentFastMoneyQuestion = fastMoneyQuestions[fastMoneyQuestionIndex]
     const fastQuestions = currentFastMoneyQuestion.question
 
-
-    const ranquestions1 = _.sample(fastMoneyQuestions)
-    const ranquestions2 = _.sample(fastMoneyQuestions)
-    const ranquestions3 = _.sample(fastMoneyQuestions)
-    const ranquestions4 = _.sample(fastMoneyQuestions)
-    const ranquestions5 = _.sample(fastMoneyQuestions)
-
-    const [fastUserAnswers, setFastUserAnswers] = useState<Answer[]>(Array.from(Array(5)))
-    const [fastUserAnswers2, setFastUserAnswers2] = useState<Answer[]>(Array.from(Array(5)))
+    const [fastUserAnswers, setFastUserAnswers] = useState<string[]>(Array.from(Array(5)))
+    const [fastUserAnswers2, setFastUserAnswers2] = useState<string[]>(Array.from(Array(5)))
     const topAnswers = currentFastMoneyQuestion.answersPoints.slice(0, 1)
 
+    const handleFastSubmit = useCallback((): void => {
+        // set user input to a div
+        setInputValue("")
+        setFastMoneyQuestionIndex(prev => {
+            if (prev === fastMoneyQuestions.length - 1) {
+                throw new Error("No more questions")
+            }
+            return prev + 1
+        })
+
+        // update fastUserAnswers with user input for each question
+        setFastUserAnswers(prev => {
+            const newAnswers = [...prev]
+            newAnswers[fastMoneyQuestionIndex] = inputValue
+            return newAnswers
+        })
+    },[fastMoneyQuestionIndex, inputValue])
 
     const [shownSet, setShownSet] = useState(0)
 
-
-
-    useEffect(() => {
-        setCurrentFastMoneyQuestion(getFastMoneyRandomQuestion)
-    }, [])
-
+    console.log(fastQuestions)
     return (
         <div>
             <div>
@@ -466,27 +467,31 @@ export const Board = () => {
                             color: "blue",
                         }
                     }>
-                    {[fastQuestions].map((question, idx) => {
-                        return (
-                            <div key={idx}>
-                                {question}
-                            </div> )
-                    } )}
+                    <div>
+                        {currentFastMoneyQuestion.question}
+                    </div>
+
+                    {/*{[fastQuestions].map((question, idx) => {*/}
+                    {/*    return (*/}
+                    {/*        <div key={idx}>*/}
+                    {/*            {question}*/}
+                    {/*        </div> )*/}
+                    {/*} )}*/}
                 </div>
                 <div className='fastMoney' id='fastMoney'>
-                    { shownSet === 0 && fastUserAnswers.map((answer, idx, userAnswer ) => {
+                    { shownSet === 0 && fastUserAnswers.map((answer, idx ) => {
 
                         return (
-                        <FastMoney  answer={answer} key={idx} userAnswer={inputValue}/>)
+                            <FastMoney  userAnswer={answer} key={idx} />)
                         })
                     }
                 </div>
 
                     <div>
 
-                        { shownSet === 1 && fastUserAnswers2.map((answer, idx, userAnswer ) => {
+                        { shownSet === 1 && fastUserAnswers2.map((answer, idx ) => {
                             return (
-                                <FastMoney answer={answer} key={idx} userAnswer={inputValue}/>)
+                                <FastMoney  userAnswer={answer} key={idx} />)
                         })
                         }
 
